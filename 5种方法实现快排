@@ -1,0 +1,212 @@
+//#include <iostream>
+//using namespace std;
+//int main()
+//{
+//	int n;
+//	while (cin >> n)
+//	{
+//		int temp = 0;
+//		int sum = 0;
+//		for (int i = 1; i <= n; i += 2)
+//		{
+//			temp += i;
+//			sum += temp;
+//		}
+//		cout << sum << endl;
+//	}
+//	system("pause");
+//	return 0;
+//}
+#include <iostream>
+#include <vector>
+#include <stack>
+#include <algorithm>
+using namespace std;
+//快排
+//1.双向下标
+void QuickSort1(vector<int>& a, int begin, int end)
+{
+	int left = begin;
+	int right = end;
+	int key = a[(left + right) / 2];
+	//递归结束条件left >= right
+	while (left < right)
+	{
+		//遇到比key小的，就往右走，直到在左边找到比key大的
+		while (left <= right && a[left] < key)
+		{
+			left++;
+		}
+		//遇到比key大的，就往左走，直到在右边找到比key小的
+		while (left <= right && a[right] > key)
+		{
+			right--;
+		}
+		//左边比key大，右边比key小就交换，然后两边一起走
+		swap(a[left], a[right]);
+		left++;
+		right--;
+	}
+	if (begin < right)
+		QuickSort1(a, begin, right);
+	if (left < end)
+		QuickSort1(a, left, end);
+}
+//挖坑法
+//以key为目标，从最右边或最左边开始走，划分区间[begin, key-1][key+1, end]
+int QuickSort2(vector<int>& a, int begin, int end)
+{
+	int key = begin;
+	while (begin < end)
+	{
+		while (begin < end && a[end] >= a[key])
+		{
+			end--;
+		}
+		while (begin < end && a[begin] <= a[key])
+		{
+			begin++;
+		}
+		swap(a[begin], a[end]);
+	}
+	swap(a[begin], a[key]);
+	return begin;
+}
+void Sort(vector<int>& a, int begin, int end)
+{
+	//递归结束条件
+	if (begin >= end)
+		return;
+	int key = QuickSort2(a, begin, end);
+	Sort(a, begin, key - 1);
+	Sort(a, key + 1, end);
+}
+
+//三数取中法，找出三个数里面次小的作为key值
+//获取三个数中次小的元素下标
+int GetMidIndex(vector<int>& a, int begin, int end)
+{
+	int mid = begin + ((end - begin) >> 1);
+	while (begin < end)
+	{
+		if (a[begin] < a[end])
+		{
+			if (a[end] > a[mid])
+			{
+				if (a[begin] > a[mid])
+					return begin;
+				else
+					return mid;
+			}
+			else
+				return end;
+		}
+		else
+		{
+			if (a[begin] > a[mid])
+			{
+				if (a[mid] > a[end])
+					return mid;
+				else
+					return end;
+			}
+			else
+				return begin;
+		}
+	}
+}
+int MidPartSort(vector<int>&a, int begin, int end)
+{
+	int mid = GetMidIndex(a, begin, end);
+	while (begin < end)
+	{
+		while (begin < end && a[end] >= a[mid])
+		{
+			end--;
+		}
+		while (begin < end && a[begin] <= a[mid])
+		{
+			begin++;
+		}
+		swap(a[begin], a[end]);
+	}
+	swap(a[begin], a[mid]);
+	//此时a[begin]的下标就是a[mid]的下标
+	return begin;
+}
+void MidSort(vector<int>& a, int begin, int end)
+{
+	//递归结束条件
+	if (begin >= end)
+		return;
+	int key = MidPartSort(a, begin, end);
+	MidSort(a, begin, key - 1);
+	MidSort(a, key + 1, end);
+}
+
+//前后指针法
+int PartPoint(vector<int>& a, int begin, int end)
+{
+	int cur = begin + 1;
+	int pre = begin;
+	while (cur <= end)
+	{
+		if (a[cur] < a[begin])
+		{
+			//prev记录当前最后一个小于begin的位置，先自加就到第一次遇到比begin大的位置
+			pre++;
+			swap(a[cur], a[pre]);
+		}
+		++cur;
+	}
+	swap(a[begin], a[pre]);
+	return pre;
+}
+void PointSort(vector<int>& a, int begin, int end)
+{
+	//递归结束条件
+	if (begin >= end)
+		return;
+	int key = PartPoint(a, begin, end);
+	PointSort(a, begin, key - 1);
+	PointSort(a, key + 1, end);
+}
+//非递归,利用栈顶元素控制区间的划分
+void QuickSortNonR(vector<int>& a, int begin, int end)
+{
+	stack<int> st;
+	st.push(end);
+	st.push(begin);
+	while (!st.empty())
+	{
+		int left = st.top();
+		st.pop();
+		int right = st.top();
+		st.pop();
+		int key = PartPoint(a, left, right);
+		if (key + 1 < right)
+		{
+			st.push(right);
+			st.push(key + 1);
+		}
+		if (left < key - 1)
+		{
+			st.push(key - 1);
+			st.push(begin);
+		}
+	}
+}
+
+int main()
+{
+	vector<int> a = { 6, 5, 1, 7, 4, 9, 0, 3, 1 };
+	//GapSort(a, 9, 4);
+	HeapSort(a, 9);
+	for (auto &c : a)
+	{
+		cout << c << ' ';
+	}
+	cout << endl;
+	system("pause");
+	return 0;
+}
