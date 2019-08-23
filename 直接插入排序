@@ -1,0 +1,25 @@
+//直接插入排序
+//把a[end+1]插入[0,end]这个有序区间，原来位置上的元素顺序后移
+void InsertSort(vector<int> &a, int n)
+{
+	for (int i = 0; i < n-1; i++)
+	{
+		int end = i;
+		//一定要保存a[end+1]的值，以免覆盖
+		int tmp = a[end + 1];
+		while (end >= 0)
+		{
+			//比较a[end+1]和[0, end]区间的每一个数
+			if (a[end] > a[end + 1])
+			{
+				//前面的数后移覆盖后面的数，空出一个位置，存被覆盖掉的数
+				a[end + 1] = a[end];
+				end--;
+			}
+			else
+				break;
+			//end--之后再加1刚好是a[end]放到a[end+1]的位置，前面空出来一个位置放之前被覆盖的a[end+1]的值
+			a[end + 1] = tmp;
+		}
+	}
+}
