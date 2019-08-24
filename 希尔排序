@@ -1,0 +1,53 @@
+//希尔排序：每次比较间隔相等的值，然后逐渐缩小间隔，直到间隔为1
+//1.递归写法
+//void GapSort(vector<int>& a, int n, int gap)
+//{
+//	if (gap <= 0)
+//		return;
+//	for (int i = 0; i <= n - gap - 1; i++)
+//	{	
+//		int end = i;
+//		int tmp = a[end + gap];
+//		while (end >= 0)
+//		{
+//			if (a[end] > a[end + gap])
+//			{
+//				a[end + gap] = a[end];
+//				end -= gap;
+//			}
+//			else
+//				break;
+//			a[end + gap] = tmp;
+//		}
+//	}
+//	gap--;
+//	GapSort(a, n, gap);
+//}
+
+//2.非递归
+void GapSort(vector<int>& a, int n)
+{
+	int gap = n;
+	while (gap > 1)
+	{
+		//gap的值逐渐变小
+		gap = gap / 3 + 1;
+		for (int i = 0; i <= n - gap - 1; i++)
+		{
+			int end = i;
+			int tmp = a[end + gap];
+			while (end >= 0)
+			{
+				//a[end]和a[end+gap]距离的值比较
+				if (a[end] > a[end + gap])
+				{
+					a[end + gap] = a[end];
+					end -= gap;
+				}
+				else
+					break;
+				a[end + gap] = tmp;
+			}
+		}
+	}
+}
