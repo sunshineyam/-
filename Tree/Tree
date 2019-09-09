@@ -1,0 +1,84 @@
+//二叉树的遍历
+#include <iostream>
+#include <cmath>
+#include <stack>
+#include <vector>
+using namespace std;
+typedef struct Node
+{
+	int _val;
+	Node* _left;
+	Node* _right;
+};
+//初始化节点
+Node* CreateNode(int val)
+{
+	Node* root = new Node();
+	root->_left = NULL;
+	root->_right = NULL;
+	root->_val = val;
+	return root;
+}
+//构建二叉树,数组中存的是节点指针
+Node* CreateTree(vector<int>& v)
+{
+	vector<Node*> p(v.size(), NULL);
+	for (int i = 0; i < v.size(); i++)
+	{
+		//把每个数组的值转换为节点指针存入数组中
+		p[i] = CreateNode(v[i]);
+	}
+	//构建二叉树
+	for (int index = 0; index < p.size() / 2; index++)
+	{
+		p[index]->_left = p[2 * index + 1];
+		p[index]->_right = p[2 * index + 2];
+	}
+	return p[0];
+}
+//中序遍历
+void InorderTree(Node* root)
+{
+	if (root)
+	{
+		InorderTree(root->_left);
+		cout << root->_val << endl;
+		InorderTree(root->_right);
+	}
+}
+//前序遍历
+void PreorderTree(Node* root)
+{
+	if (root)
+	{
+		cout << root->_val << endl;
+		PreorderTree(root->_left);
+		PreorderTree(root->_right);
+	}
+}
+//后序遍历
+void PostordeerTree(Node* root)
+{
+	if (root)
+	{
+		PostordeerTree(root->_left);
+		PostordeerTree(root->_right);
+		cout << root->_val << endl;
+	}
+}
+int main()
+{
+	int n;
+	vector<int> v;
+	v.resize(5);
+	for (int i = 0; i < 5; i++)
+	{
+		v[i] = i;
+	}
+	Node* root = CreateTree(v);
+	//InorderTree(root);
+	//PreorderTree(root);
+	PostordeerTree(root);
+	system("pause");
+	return 0;
+}
